@@ -1,0 +1,5 @@
+animal_data/
+models/
+
+__pycache__/
+.vscode/
