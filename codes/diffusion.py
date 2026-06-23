@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     steps = [0,200,400,600,800,999]
 
-    os.makedirs('outputs/noisy_samples', exist_ok=True)
+    os.makedirs('../outputs/noisy_samples', exist_ok=True)
 
     plt.figure(figsize=(15, 3))
 
@@ -74,5 +74,5 @@ if __name__ == '__main__':
 
     plt.tight_layout()
     
-    plt.savefig('outputs/noisy_samples/forward_diffusion.png', dpi=300, bbox_inches='tight')
+    plt.savefig('../outputs/noisy_samples/forward_diffusion.png', dpi=300, bbox_inches='tight')
     plt.show()
