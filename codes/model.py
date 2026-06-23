@@ -46,6 +46,24 @@ class UpBlock(nn.Module):
         x = self.conv(x)
 
         return x
+    
+class TimeEmbedding(nn.Module):
+
+    def __init__(self,embedding_dim):
+        super().__init__()
+
+        self.embedding = nn.Sequential(
+            nn.Linear(1, embedding_dim),
+            nn.ReLU(inplace=True),
+            nn.Linear(embedding_dim, embedding_dim),
+            nn.ReLU(inplace=True)
+        )
+
+    def forward(self,t):
+
+        t = t.float().unsqueeze(1)
+
+        return self.embedding(t)
 
 if __name__ == '__main__':
 
@@ -65,3 +83,8 @@ if __name__ == '__main__':
     y_up = up(y_down,y)
     print('after UpBlock;', y_up.shape)
 
+    time_embedding = TimeEmbedding(256)
+
+    t = torch.tensor([10, 500])
+    emb = time_embedding(t)
+    print('\ntime Embedding:', emb.shape, '\n')
