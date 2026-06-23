@@ -4,6 +4,9 @@ from torchvision import transforms
 
 import os
 from PIL import Image
+
+import random
+random.seed(42)
 class AnimalDataset(Dataset):
 
     def __init__(self, root_dir, selected_classes, images_per_class=20, image_size=64):
@@ -22,6 +25,8 @@ class AnimalDataset(Dataset):
                 continue
 
             image_names = sorted(os.listdir(class_path))
+            random.shuffle(image_names)
+
             count = 0
 
             for image_name in image_names:
