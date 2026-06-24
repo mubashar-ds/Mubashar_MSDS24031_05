@@ -14,7 +14,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 image_size = 64
 batch_size = 8
 learning_rate = 1e-3
-epochs = 30
+epochs = 50
 
 def train_one_epoch(model, diffusion, dataloader,optimizer,criterion,device):
 
@@ -54,6 +54,7 @@ def train():
     optimizer = optim.Adam(model.parameters(),lr=learning_rate)
 
     loss_history = []
+    best_loss = float('inf')
 
     for epoch in range(epochs):
 
@@ -63,9 +64,16 @@ def train():
         print(f'\nepoch [{epoch + 1}/{epochs}]')
         print(f'\nloss: {average_loss:.3f}')
 
+        if average_loss<best_loss:
+            best_loss = average_loss
+
+            os.makedirs('../saved_models', exist_ok=True)
+            torch.save(model.state_dict(), '../saved_models/best_diffusion_model.pth')
+            print('\nbest model saved,.')
+
     os.makedirs('../saved_models', exist_ok=True)
     torch.save(model.state_dict(), '../saved_models/diffusion_model.pth')
-    print('\nmodel saved successfully..\n')
+    print('\nmodel saved..\n')
 
     plt.figure(figsize=(8,5))
     plt.plot(loss_history, marker='o')
