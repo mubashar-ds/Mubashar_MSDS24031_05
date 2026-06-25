@@ -72,11 +72,6 @@ class DiffusionUNet(nn.Module):
         # time embedding...
         self.time_embedding = TimeEmbedding(256)
 
-        # project timestep embedding..
-        self.time_64 = nn.Linear(256, 64)
-        self.time_128 = nn.Linear(256, 128)
-        self.time_256 = nn.Linear(256, 256)
-
         # encoder..
         self.input_conv = DoubleConv(3,64)
         self.down1 = DownBlock(64, 128)
@@ -95,30 +90,22 @@ class DiffusionUNet(nn.Module):
     def forward(self, x, t):
 
         # time embedding..
-        time_embedding = self.time_embedding(t)
+        t = self.time_embedding(t)
 
         # encoder
         skip1 = self.input_conv(x)
-
-        time_64 = self.time_64(time_embedding).unsqueeze(-1).unsqueeze(-1)
-        skip1 = skip1 + time_64
-
         skip2 = self.down1(skip1)
-
-        time_128 = self.time_128(time_embedding).unsqueeze(-1).unsqueeze(-1)
-        skip2 = skip2 + time_128
-
         x = self.down2(skip2)
 
         # bottleneck
         x = self.bottleneck(x)
 
-        time_256 = self.time_256(time_embedding).unsqueeze(-1).unsqueeze(-1)
-        x = x + time_256
+        t = t.unsqueeze(-1).unsqueeze(-1)
+        x = x + t
 
         # decoder
         x = self.up1(x,skip2)
-        x = self.up2(x, skip1)
+        x = self.up2(x,skip1)
         x = self.output_conv(x)
 
         return x
