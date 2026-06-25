@@ -30,11 +30,13 @@ class Diffusion:
         return noisy_images, noise
     
     @torch.no_grad()
-    def sample(self, model, num_images, image_size, device):
+    def sample(self, model, num_images, image_size, device, save_steps=False):
 
         model.eval()
 
         x = torch.randn(num_images, 3,image_size,image_size).to(device)
+
+        saved_images = []
 
         for i in reversed(range(1, self.noise_steps)):
 
@@ -52,9 +54,17 @@ class Diffusion:
 
             x = (1 / torch.sqrt(alpha)) * (x - ((1 - alpha) / torch.sqrt(1 - alpha_hat)) * predicted_noise) + torch.sqrt(beta) * noise
 
+            if save_steps:
+                if i in [900,700,500,300,100, 1]:
+                    image = (x.clamp(-1, 1) + 1)/2
+                    saved_images.append(image.detach().cpu())
+
         model.train()
         
         x = (x.clamp(-1, 1) + 1) / 2
+
+        if save_steps:
+            return x, saved_images
 
         return x
 
