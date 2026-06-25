@@ -306,7 +306,7 @@ def train():
 
     selected_classes = ['Cat', 'Lion', 'Tiger','Horse', 'Elephant']
 
-    train_loader = create_dataloader(dataset_path='../animal_data', selected_classes=selected_classes, 
+    train_loader = create_dataloader(dataset_path='animal_data', selected_classes=selected_classes, 
                                      batch_size=batch_size, image_size=image_size,images_per_class=20)
 
     diffusion = Diffusion(device=device)
@@ -328,12 +328,12 @@ def train():
         if average_loss<best_loss:
             best_loss = average_loss
 
-            os.makedirs('../saved_models', exist_ok=True)
-            torch.save(model.state_dict(), '../saved_models/best_diffusion_model.pth')
+            os.makedirs('saved_models', exist_ok=True)
+            torch.save(model.state_dict(), 'saved_models/best_diffusion_model.pth')
             print('\nbest model saved,.')
 
-    os.makedirs('../saved_models', exist_ok=True)
-    torch.save(model.state_dict(), '../saved_models/diffusion_model.pth')
+    os.makedirs('saved_models', exist_ok=True)
+    torch.save(model.state_dict(), 'saved_models/diffusion_model.pth')
     print('\nmodel saved..\n')
 
     plt.figure(figsize=(8,5))
@@ -342,11 +342,25 @@ def train():
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.grid(True)
-    os.makedirs('../outputs/plots',exist_ok=True)
-    plt.savefig('../outputs/plots/training_loss.png',dpi=300, bbox_inches='tight')
+    os.makedirs('outputs/plots',exist_ok=True)
+    plt.savefig('outputs/plots/training_loss.png',dpi=300, bbox_inches='tight')
     plt.show()
 
     return model, loss_history
 
 # ---------------------------------
 
+if __name__ == '__main__':
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    print('diffusion model')
+
+    model = DiffusionUNet().to(device)
+
+    diffusion = Diffusion(device=device)
+
+    print('\nmodel created..')
+    print(f'noise steps : {diffusion.noise_steps}')
+
+    model, history = train()
