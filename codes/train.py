@@ -13,8 +13,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 image_size = 64
 batch_size = 8
-learning_rate = 1e-3
-epochs = 50
+learning_rate = 3e-4
+epochs = 100
 
 def train_one_epoch(model, diffusion, dataloader,optimizer,criterion,device):
 
