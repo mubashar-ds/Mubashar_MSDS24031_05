@@ -51,7 +51,7 @@ def train():
     diffusion = Diffusion(device=device)
     model = DiffusionUNet().to(device)
     criterion = DiffusionLoss()
-    optimizer = optim.Adam(model.parameters(),lr=learning_rate)
+    optimizer = optim.Adam(model.parameters(),lr=learning_rate, weight_decay=1e-5)
 
     loss_history = []
     best_loss = float('inf')
